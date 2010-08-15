@@ -59,8 +59,7 @@ package model {
     def barter(next: Box[String]): Box[Bid] = 
       for(ass <- next ?~! "Amount is not a number";
           amo <- tryo(BigDecimal(ass).doubleValue) ?~! "Amount is not a number";
-          nxt <- nextAmount;
-          vld <- tryo(amo).filter(_ >= nxt) ?~ "Your bid is lower than required!"
+          vld <- tryo(amo).filter(_ >= (nextAmount openOr 0D)) ?~ "Your bid is lower than required!"
       ) yield {
         new Bid().auction(this).customer(Customer.currentUser).amount(vld).saveMe
       }
